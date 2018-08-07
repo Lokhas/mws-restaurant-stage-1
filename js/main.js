@@ -141,6 +141,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = restaurant.name;
   li.append(image);
 
   const name = document.createElement('h1');
@@ -177,21 +178,17 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 }
 
-/**
- * Service Worker
- * rewrite the console logs and //explanations
- */
-/*
-if ('serviceWorker' in navigator) {
-  /*window.addEventListener('load', function() {*/
- /*   navigator.serviceWorker.register('/sw.js')
-    .then(registration => {
-      // Registration was successful
-      console.log(`Registration successful, with scope: ${registration.scope}`);
-    }).catch(err => {
-      // registration failed :(
-      console.log(`ServiceWorker registration failed: ${err}`);
+//service worker test
+  /**
+   *     Service Worker registration
+   */
+/*if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(function(registration) {
+      // registration worked
+      console.log('Registration succeeded. Scope is ' + reg.scope);
+    })
+    .catch(function(e) {
+      console.error('Error during service worker registration:', e);
     });
-  //});
-}
-/
+}*/
