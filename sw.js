@@ -1,56 +1,62 @@
-let staticCacheName = "restaurants-static-v3";
+let staticCacheName = "restaurants-v1";
 let urlsToCache = [
-  "./",
-  "./sw_registration.js",
-  "index.html",  
-  "restaurant.html",
-  "css/styles.css",
-  "data/restaurants.json",
-  "js/dbhelper.js",
-  "js/main.js",
-  "js/restaurant_info.js",
-  "img/1.jpg",
-  "img/2.jpg",
-  "img/3.jpg",
-  "img/4.jpg",
-  "img/5.jpg",
-  "img/6.jpg",
-  "img/7.jpg",
-  "img/8.jpg",
-  "img/9.jpg",
-  "img/10.jpg"
+  "/",
+  "/index.html",  
+  "/restaurant.html",
+  "/css/styles.css",
+  "/css/responsive.css",
+  "/js/dbhelper.js",
+  "/js/main.js",
+  "/js/restaurant_info.js",
+  "/sw_registration.js",
+  "/data/restaurants.json",
+  "/img/1.jpg",
+  "/img/2.jpg",
+  "/img/3.jpg",
+  "/img/4.jpg",
+  "/img/5.jpg",
+  "/img/6.jpg",
+  "/img/7.jpg",
+  "/img/8.jpg",
+  "/img/9.jpg",
+  "/img/10.jpg"
 ];
 
 self.addEventListener("install", event => {
   event.waitUntil(
     caches
-      .open(staticCacheName)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(self.skipWaiting())
+    .open(staticCacheName)
+    .then(function (cache) {
+      return cache.addAll(urlsToCache);
+    })
+    .catch(error => {
+      console.log(error);
+    })
   );
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => Promise.all(cacheNames.map(cache => {
-      if (cache !== staticCacheName) {
-        console.log("[ServiceWorker] removing cached files from ", cache);
-        return caches.delete(cache);
-      }
-    })))
-  )
-})
+    caches.keys()
+    .then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== staticCacheName) {
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+});
 
 self.addEventListener("fetch", event => {
-  if (event.request.url.startsWith(self.location.origin)) {
-    event.respondWith(
-      caches.match(event.request).then(response => {
-        if (response) {
-          // console.log("[ServiceWorker] Found in cache ", event.request.url);
-          return response;
-        }
-        return fetch(event.request);
-      })
-    );
-  }
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      if (response) {
+        return response;
+      }
+      return fetch(event.request);
+    })
+  );
 });
